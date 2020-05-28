@@ -106,4 +106,59 @@ c    &6)
       aland=aland*1.e-2
       travp=travp*1.e-2
 c     page 16
-      
+      read(2,*,end=20,err=30)prwt,iair,htfr,pgas
+      write(3,50,err=30)prwt,iair,htfr,pgas
+50    format(1x,'projectile mass kg',e14.6./' switch to calculate energ
+     &y lost to air resistance J',i2,/' fraction of work against bore u
+     &sed to heat the tube',e14.6/1x,' gas pressure Pa' ,e14.6)
+     
+      read(2,*,end=20,err=30)npts,(br(i),trav(i),i=1,npts) !i=1 or i=l?
+      write(3,60,err=30)npts,(br(i),trav(i),i=1,npts)
+60    format(1x,'number barrel resistance points',i2,/' bore resistance
+     & MPa - travel cm'/(1x,e14.6,e14.6))
+      write(3,65)
+      do 62 i=1,npts
+      br(i)=br(i)*1.e6
+      trav(i)=trav(i)*1.e-2
+62    continue
+65    format(1x)
+      read(2,*,end=20,err=30)rcwt,nrp,(rp(i),tr(i),i=1,nrp)
+      write(3,70,err=30)rcwt,nrp,(rp(i),tr(i),i=1,nrp)
+70    format(1x,' mass of recoiling parts kg',e14.6,/' number of recoi
+     &l point pairs',i2,/' recoil force N',' recoil time sec'/,(1x,e14
+     &.6,3x,e14.6))
+      write(3,65)
+      read(2,*,end=20,err=30)ho,tsh,cshl,twal,hl,rhocs
+      write(3,75,err=30)ho,tshl,cshl,twal,hl,rhocs
+75    format(1x,' free convective heat transfer coefficient wcm**2 K',
+     &e14.6,/' chamber wall thickness cm',e14.6,/' heat capacity of st
+     &eel of chamber wall J/g K',e14.6,/' initial temperature of chambe
+     &r wall K',e14.6,/' heat loss coefficient',e14.6,/' density of ch
+     &amber wall steel g/cm**3',e14.6//)
+      ho=ho/1.e-4
+      tshl=tshl*1.e-2
+      cshl=cshl*1.e+3
+      rhocs=rhocs*1.e-3/1.e-6
+      read(2,*,end=20,err=30)forcig,covi,tempi,chwi,gamai
+      write(3,85,err=30)forcig,covi,tempi,chwi,gamai
+85    format(1x,' impetus of igniter propellant J/g',e14.6,/' covolume
+     & of igniter cm**3/g',e14.6,/' adiabatic flame temperature of igni 
+     &ter propellant K',e14.6,/' initial mass of igniter kg',e14.6,/' r
+     &atio of specific heats for igniter',e14.6//)
+      forcig=forcig*1.e+3
+      covi=covi*1.e-6/1.e-3
+      read(2,*,end=20,err=30)nprop,(forcp(i),tempp(i),covp(i),chwp(i),
+     &rhop(i),gamap(i),nperfs(i)glenp(i),pdpi(i),pdpo(i),gdiap(i),dbpc
+     &(i),i=1,nprop)
+      write(3,95,err=30)(i,forcp(i),tempp(i),covp(i),chwp(i),
+     &,rhop(i),gamap(i),nperfs(i),glenp(i),pdpi(i),pdpo(i),gdiap(i),dbpc
+     &p(i),I=1,nprop)
+95    format((' for propellant number',i2,/' impetus of propellant J/g
+     &',e14.6,/' adiabatic temperature of propellant K',e14.6,/' covol
+     &ume of propellant cm**3/g',e14.6/' initial mass of propellant kg'
+     &,e14.6,/' density of propellant g/cm**#',e14.6' ratio of specifi
+     &c heats for propellant',e14.6/' number of perforations of propell
+     &ant',i2/' length of propellant grain cm',e14.6/' diameteter of inn
+     &er perforation in propellant grains cm',e14.6/' diameter of outer
+     &perforation of propellant grains cm',e14.6/' outside diameter of
+c     page 17
