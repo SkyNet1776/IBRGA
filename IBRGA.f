@@ -1,11 +1,11 @@
-      program ibrgac
+    program ibrgac
       character bdfile*10,outfil*10
-      dimension br(10),trav(10),rp(10),tr(10),forcp(10),tempp(10),covp(
+      dimension br(10),trav(10),rp(10),tr(10),forcp(10),tempp(10),covp(&
      &10)
-      dimension chwp(10),rhop(10),gamap(10),nperfs(10),glenp(10),pdpi(10
-     &,p dpo(10),gdiap(10),dbpcp(10),alpha(10,10),beta(10,10),
+      dimension chwp(10),rhop(10),gamap(10),nperfs(10),glenp(10),pdpi(10&
+     &,p dpo(10),gdiap(10),dbpcp(10),alpha(10,10),beta(10,10),&
      &pres(10,10)
-      dimension a(4),b(4),ak(4),d(20),y(20),p(20),z(20),frac(10),surf(10
+      dimension a(4),b(4),ak(4),d(20),y(20),p(20),z(20),frac(10),surf(10&
      &),nbr(10),ibo(10)
       real lambda,j1zp,j2zp,j3zp,j4zp
       dimension chdist(5),chdiam(5),bint(4)
@@ -37,7 +37,7 @@ c     breech. Assumes truncated cones.
 47    format(1x,'Using chambrage pressure gradient')
       read(2,*,end=20,err=30)nchpts,(chdist(I),chdiam(I),I=1,nchpts)
       write(3,53,err=30)(chdist(I),chdiam(I),I=1,nchpts)
-53    format(///,'   chamber distance cm   chamber diameter cm',/(5x,e14
+53    format(///,'   chamber distance cm   chamber diameter cm',/(5x,e14&
      &.6,5x,e14.6))
       do 54 I=1,nchpts
       chdist(I)=0.01*chdist(I)
@@ -94,12 +94,12 @@ c     page 15
       go to 56
 41    cham=bvol*1.e6
 c     write(3,47,err=30)bint(1),bint(3),bint(4)
-c     format(1x,'bint 1 = ',e14.6,' bint 3 = ',e14.6,' bint 4 = ',e14.
+c     format(1x,'bint 1 = ',e14.6,' bint 3 = ',e14.6,' bint 4 = ',e14.&
 c    &6)
       chmlen=chdist(nchpts)
 52    write(3,40,err=30)cham,grve,aland,glr,twst,travp
-40    format(1x,'chamber volume cm**3',e.14.6,/' groove diam cm',14.6,/
-     &' land diam cm',e14.6,/' groove/land ratio',e14.6,/' twist turns
+40    format(1x,'chamber volume cm**3',e.14.6,/' groove diam cm',14.6,/&
+     &' land diam cm',e14.6,/' groove/land ratio',e14.6,/' twist turns&
      &/caliber ',e14.6,/' projectile travel cm', e14.6///)
       cham-cham*1.e-6
       grve=grve*1.e-2
@@ -108,13 +108,13 @@ c    &6)
 c     page 16
       read(2,*,end=20,err=30)prwt,iair,htfr,pgas
       write(3,50,err=30)prwt,iair,htfr,pgas
-50    format(1x,'projectile mass kg',e14.6./' switch to calculate energ
-     &y lost to air resistance J',i2,/' fraction of work against bore u
+50    format(1x,'projectile mass kg',e14.6./' switch to calculate energ&
+     &y lost to air resistance J',i2,/' fraction of work against bore u&
      &sed to heat the tube',e14.6/1x,' gas pressure Pa' ,e14.6)
      
       read(2,*,end=20,err=30)npts,(br(i),trav(i),i=1,npts) !i=1 or i=l?
       write(3,60,err=30)npts,(br(i),trav(i),i=1,npts)
-60    format(1x,'number barrel resistance points',i2,/' bore resistance
+60    format(1x,'number barrel resistance points',i2,/' bore resistance&
      & MPa - travel cm'/(1x,e14.6,e14.6))
       write(3,65)
       do 62 i=1,npts
@@ -124,16 +124,16 @@ c     page 16
 65    format(1x)
       read(2,*,end=20,err=30)rcwt,nrp,(rp(i),tr(i),i=1,nrp)
       write(3,70,err=30)rcwt,nrp,(rp(i),tr(i),i=1,nrp)
-70    format(1x,' mass of recoiling parts kg',e14.6,/' number of recoi
-     &l point pairs',i2,/' recoil force N',' recoil time sec'/,(1x,e14
+70    format(1x,' mass of recoiling parts kg',e14.6,/' number of recoi&
+     &l point pairs',i2,/' recoil force N',' recoil time sec'/,(1x,e14&
      &.6,3x,e14.6))
       write(3,65)
       read(2,*,end=20,err=30)ho,tsh,cshl,twal,hl,rhocs
       write(3,75,err=30)ho,tshl,cshl,twal,hl,rhocs
-75    format(1x,' free convective heat transfer coefficient wcm**2 K',
-     &e14.6,/' chamber wall thickness cm',e14.6,/' heat capacity of st
-     &eel of chamber wall J/g K',e14.6,/' initial temperature of chambe
-     &r wall K',e14.6,/' heat loss coefficient',e14.6,/' density of ch
+75    format(1x,' free convective heat transfer coefficient wcm**2 K',&
+     &e14.6,/' chamber wall thickness cm',e14.6,/' heat capacity of st&
+     &eel of chamber wall J/g K',e14.6,/' initial temperature of chambe&
+     &r wall K',e14.6,/' heat loss coefficient',e14.6,/' density of ch&
      &amber wall steel g/cm**3',e14.6//)
       ho=ho/1.e-4
       tshl=tshl*1.e-2
@@ -141,28 +141,28 @@ c     page 16
       rhocs=rhocs*1.e-3/1.e-6
       read(2,*,end=20,err=30)forcig,covi,tempi,chwi,gamai
       write(3,85,err=30)forcig,covi,tempi,chwi,gamai
-85    format(1x,' impetus of igniter propellant J/g',e14.6,/' covolume
-     & of igniter cm**3/g',e14.6,/' adiabatic flame temperature of igni 
-     &ter propellant K',e14.6,/' initial mass of igniter kg',e14.6,/' r
+85    format(1x,' impetus of igniter propellant J/g',e14.6,/' covolume&
+     & of igniter cm**3/g',e14.6,/' adiabatic flame temperature of igni& 
+     &ter propellant K',e14.6,/' initial mass of igniter kg',e14.6,/' r&
      &atio of specific heats for igniter',e14.6//)
       forcig=forcig*1.e+3
       covi=covi*1.e-6/1.e-3
-      read(2,*,end=20,err=30)nprop,(forcp(i),tempp(i),covp(i),chwp(i),
-     &rhop(i),gamap(i),nperfs(i)glenp(i),pdpi(i),pdpo(i),gdiap(i),dbpc
+      read(2,*,end=20,err=30)nprop,(forcp(i),tempp(i),covp(i),chwp(i),&
+     &rhop(i),gamap(i),nperfs(i)glenp(i),pdpi(i),pdpo(i),gdiap(i),dbpc&
      &(i),i=1,nprop)
-      write(3,95,err=30)(i,forcp(i),tempp(i),covp(i),chwp(i),
-     &,rhop(i),gamap(i),nperfs(i),glenp(i),pdpi(i),pdpo(i),gdiap(i),dbpc
+      write(3,95,err=30)(i,forcp(i),tempp(i),covp(i),chwp(i),&
+     &,rhop(i),gamap(i),nperfs(i),glenp(i),pdpi(i),pdpo(i),gdiap(i),dbpc&
      &p(i),I=1,nprop)
-95    format((' for propellant number',i2,/' impetus of propellant J/g
-     &',e14.6,/' adiabatic temperature of propellant K',e14.6,/' covol
-     &ume of propellant cm**3/g',e14.6/' initial mass of propellant kg'
-     &,e14.6,/' density of propellant g/cm**#',e14.6' ratio of specifi
-     &c heats for propellant',e14.6/' number of perforations of propell
-     &ant',i2/' length of propellant grain cm',e14.6/' diameteter of inn
-     &er perforation in propellant grains cm',e14.6/' diameter of outer
-     &perforation of propellant grains cm',e14.6/' outside diameter of
+95    format((' for propellant number',i2,/' impetus of propellant J/g&
+     &',e14.6,/' adiabatic temperature of propellant K',e14.6,/' covol&
+     &ume of propellant cm**3/g',e14.6/' initial mass of propellant kg'&
+     &,e14.6,/' density of propellant g/cm**#',e14.6' ratio of specifi&
+     &c heats for propellant',e14.6/' number of perforations of propell&
+     &ant',i2/' length of propellant grain cm',e14.6/' diameteter of inn&
+     &er perforation in propellant grains cm',e14.6/' diameter of outer&
+     &perforation of propellant grains cm',e14.6/' outside diameter of&
 c     page 17
-     &propellant graincm',e14.6/' distance between perf centers cm',e1
+     &propellant graincm',e14.6/' distance between perf centers cm',e1&
      &4.6)//)
       tmpi=0.0
       do 96 i=1,nprop
@@ -178,10 +178,10 @@ c     page 17
 96    continue
       tmpi=tmpi+chwi
       do 97 j=1,nprop
-      read(2,*,end=20,err=30)nbr(j),(alpha(j,i),beta(j,i),pres(j,i),
+      read(2,*,end=20,err=30)nbr(j),(alpha(j,i),beta(j,i),pres(j,i),&
      &i=1,nbr(j))
-110   format(1x,'number of burning rate points',i2/3x,' exponent',8x,'
-     & coefficient',10x,' pressure'/5x,'-',15x,'cm/sec-MPa**ai',10x,'MP
+110   format(1x,'number of burning rate points',i2/3x,' exponent',8x,'&
+     & coefficient',10x,' pressure'/5x,'-',15x,'cm/sec-MPa**ai',10x,'MP&
      &a',/(1x,e14.6,5x,e14.6,15x,14.6))
       do 112 i=1,nbr(j)
       beta(j,i)=beta(j,i)*1.e-2
@@ -191,7 +191,7 @@ c     page 17
       write(3,65)
       read(2,*,end=20,err=30)deltat,deltap,tstop
       write(3,120,err=30)deltat,deltap,tstop
-120   format(1x,'time increment msec',14.6' print increment msec',e14
+120   format(1x,'time increment msec',14.6' print increment msec',e14&
      &.6/1x,'time to stop calculation msec ',e14.6)
       write(*,130)
       deltat=deltat*0.001
@@ -239,11 +239,11 @@ c     Page 18
       z(3)=1.
       nde=ibrp+nprop
       write#,132)areab,pmean,vp0,volgi
-132   format(1x,'area bore m^2 ',e16.6,' pressure from ign Pa',e16.6,/
-     &1x,' volume of unburnt prop m^3 ',e16.6,' init cham vol-cov ign m
+132   format(1x,'area bore m^2 ',e16.6,' pressure from ign Pa',e16.6,/&
+     &1x,' volume of unburnt prop m^3 ',e16.6,' init cham vol-cov ign m&
      &^3 ',16.6)
       write(3,6)
-6     format(1x,'      time       acc      vel      dis      mpress      
+6     format(1x,'      time       acc      vel      dis      mpress      &
      &       pbase       pbrch       ')
       iswl=0
 19    continue
@@ -259,7 +259,7 @@ c     FIND BARREL RESISTANCE
 c     FIND MASS FRACTION BURNING RATE
       do 211 k=1, nprop
       if(ibo(k).eq.1)goto211
-      call prf017(pdpo(k),pdpi(k),gdiap(k),dbpcp(k),glenp(k),surf(k),fra
+      call prf017(pdpo(k),pdpi(k),gdiap(k),dbpcp(k),glenp(k),surf(k),fra&
      &c(k),y(ibrp+k),nperfs(k),u)
       if(surf(k).lt.1.e-10) ibo(k)=1
 211   continue
@@ -299,7 +299,7 @@ c     ENERGY LOSS DUE TO HEAT LOSS
       z(5)=areaw*htns*(tgas=wallt)*hl
       elht=y(5)
       wallt=(elht+htfr*elbr)/cshl/rhocs/areaw/tshl+twal
-c     write(3,*)lambda,avcp,avden,avvel,ho,areaw,htns,tgas,wallt,hl,z(5)
+c     write(3,*)lambda,avcp,avden,avvel,ho,areaw,htns,tgas,wallt,hl,z(5)&
 c    &,elht
 c     ENERGY LOSS DUE TO AIR RESISTANCE
       air=iair
@@ -327,7 +327,7 @@ c     CALCULATE GAS TEMPERATURE
 231   continue
 c     Page 20
       tenergy=elpt+elpr+elgpm+elbr+elrc+elht+elar
-      tgas=(eprop+forcig*chwi/(gamai-1.)-elpt-elpr-elgpm-elbr-elrc-elht
+      tgas=(eprop+forcig*chwi/(gamai-1.)-elpt-elpr-elgpm-elbr-elrc-elht&
      &-elar)/(rprop+forcig*chwi/(gamai-1.)/tempi)
 c     FIND FREE VOLUME
       v1=0.0
@@ -435,12 +435,12 @@ c     GET BURNING RATE
       rmvel=(y(1)-rmvelo)*dfract+rmvelo
       tmvel=(y(3)-tmvelo)*drafct+tmvelo
       write(3,318)rmvel,tmvel
-318   format(1x,'muzzle velocity m/s ',e14.6,' time of muzzle velocity s
+318   format(1x,'muzzle velocity m/s ',e14.6,' time of muzzle velocity s&
      &ec ',e14.6)
 c     Page 22
       goto 319
 303   write(3,327)y(1),y(3)
-327   format(1x,'veloicty of projectile m/s ',e14.6,' at this time msec
+327   format(1x,'veloicty of projectile m/s ',e14.6,' at this time msec&
      &',e14.6)
 319   efi=chwi*forcig/(gamai-1.)
       efp=0.0
@@ -452,7 +452,7 @@ c     Page 22
 317   format(1x,'total initial energy available J = ',e14.6)
       tengas=chwi*forcig*tgas/(gamai-1.)/tempi
       do 135 i=1,nprop
-      tengas=(frac(i)*chwp(i)*forcp(i)*tgas/tempp(i)/(gamap(i)-1.))+teng
+      tengas=(frac(i)*chwp(i)*forcp(i)*tgas/tempp(i)/(gamap(i)-1.))+teng&
      &as
       write(3,328)i,frac(i)
 328   format(' FOR PROPELLANT ',I2,' MASSFRACT BURNT IS ',e14.6)
@@ -474,7 +474,7 @@ c     Page 22
       write(3,326)elar
 326   format(1x,'energy lost to air resistance J= ',e14.6)
 c     call gettim(ihro,imino,iseco,ihunso)
-c     time=(ihro-ihr)*3600.+(imino-imin)*60.+(iseco-isec)+(ihunso-inhuns)
+c     time=(ihro-ihr)*3600.+(imino-imin)*60.+(iseco-isec)+(ihunso-inhuns)&
 c    &/100.
 c     write(3,*)time
       stop
@@ -551,12 +551,12 @@ c     page 24
       SURF=0
       V=0
       GO TO 850
-340   S0=PI*LM2X*LM2X*(D+P1+6.*P+12.*X)+HAFPI*(DM2X*DM2X
+340   S0=PI*LM2X*LM2X*(D+P1+6.*P+12.*X)+HAFPI*(DM2X*DM2X&
      & -P1P2X*P1P2X-6.*PP2X*PP2X)
       V0=PIFOR*LM2X*(DM2X*DM2X-P1P2X*P1P2X-6.*PP2X*PP2X)
       IF(X.GT.W4/2.)GO TO 360
       MASSF=-TWOX/L/(DSQ-P1SQ-6.*PSQ)
-      MASSF=MASSF*(24.*XSQ+(24.*P+4.*P1+4.*D-12.*L)*+P1SQ
+      MASSF=MASSF*(24.*XSQ+(24.*P+4.*P1+4.*D-12.*L)*+P1SQ&
      & +6.*PSQ-2.*L*D-2.*P1*L-12.*L*P-DSQ)
       SURF=S0
       RETURN
@@ -571,7 +571,7 @@ c     page 24
       A3=ATAN(SQRT(1.-B3*B3)/B3)
       B4=((P-P1)*(P+P1+4.*X)+4.*D1SQ/4./D1/PP2X
       A4=ATAN(SQRT(1.-B4*B4)/B4)
-      F2=AR/4.*P12XSQ+A4/4.*PP2XSQ
+      F2=AR/4.*P12XSQ+A4/4.*PP2XSQ&
      & -SQRT(Z*(Z-D1)*(2.*Z-P-TWOX)*(2.*Z-P1-TWOX))
       L2=LM2X*(A4*PP2X+A3*P1P2X)
 460   IF(X.GT.W/2.)GO TO 490
@@ -596,7 +596,7 @@ c     page 24
       A1=PI+A1
 610   B2=((D+P)*(D-P-4.*X)+4.*D1SQ)/4./D1/DM2X
       A2=ATAN(SQRT(1.-B2*B2)/B2)
-      F1=A1/4.*PP2XSQ-A2/4.*DM2XSQ+SQRT(Y*(Y-D1)
+      F1=A1/4.*PP2XSQ-A2/4.*DM2XSQ+SQRT(Y*(Y-D1)&
      & *(2.*Y-P-TWOX)*(2.*Y-D+TWOX))
       L1=LM2X*(A1*PP2X+A2*DM2X)
 650   IF(X.GT.W/2.)GO TO 690
@@ -608,21 +608,21 @@ c     Page 25
       S1=0.0
       V1=0.0
       GO TO 760
-730   S1=3.*D2SQ3-PI*PP2XSQ-HAFPI*P12XSQ
+730   S1=3.*D2SQ3-PI*PP2XSQ-HAFPI*P12XSQ&
      & +6.*F3+12.*F2
-      S1=S1+LM2X*(2.*(PI-3.*A5-3.*A4)*PP2X+(PI-6.*A3)
+      S1=S1+LM2X*(2.*(PI-3.*A5-3.*A4)*PP2X+(PI-6.*A3)&
      & *P1P2X)
-      V1=LM2X/2.*(3.*D2SQ3-PI*PP2XSQ)
+      V1=LM2X/2.*(3.*D2SQ3-PI*PP2XSQ)&
      & -HAFPI*P12XSQ+.6*F3+12.*F2)
 760   IF(X.LT.X2) GO TO 800
       S2=0.0
       V2=0.0
       GO TO 830
-800   S2=HAFPI*DM2XSQ-3.*D2SQ3-TWOPI*PP2XSQ
+800   S2=HAFPI*DM2XSQ-3.*D2SQ3-TWOPI*PP2XSQ&
      & +12.*F1+6.*F3\
-      S2=S2+LM2X*((PI-6.*A2)*DM2X+2.*(TWOPI-3.*A1-3.*A5)
+      S2=S2+LM2X*((PI-6.*A2)*DM2X+2.*(TWOPI-3.*A1-3.*A5)&
      & *PP2X)
-      V2=LM2X/2.*(HAFPI*DM2XSQ-3.*D2SQ3-TWOPI
+      V2=LM2X/2.*(HAFPI*DM2XSQ-3.*D2SQ3-TWOPI&
      & *PP2XSQ+12.*F1+6.*F3)
 830   SURF=S1+S2
       V=V1+V2
@@ -647,7 +647,7 @@ C     ONE PERF CALCULATIONS START HERE
 C
 3000  (if(d-p-4.*x.le.0.) go to 3001
       twox=x+x
-      MASSF=TWOX*(DSQ+2.*L*D-4.*X*D-PSQ+2.*P*L-4.*P*X)
+      MASSF=TWOX*(DSQ+2.*L*D-4.*X*D-PSQ+2.*P*L-4.*P*X)&
      & /(DSQ*L-PSQ*L)
       u=dsq*l*pi/4.-psq*l*pi/4.
 3001  surf=0.0
@@ -655,4 +655,3 @@ C
       u=dsq*l*pi/4.-psq*l*pi/3
       return
       END
-      
