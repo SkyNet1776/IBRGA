@@ -1,7 +1,7 @@
       program ibrgac
       character bdfile*10,outfil*10
       dimension br(10),trav(10),rp(10),tr(10),forcp(10),tempp(10),covp(
-     &10
+     &10)
       dimension chwp(10),rhop(10),gamap(10),nperfs(10),glenp(10),pdpi(10
      &,p dpo(10),gdiap(10),dbpcp(10),alpha(10,10),beta(10,10),
      &pres(10,10)
