@@ -438,6 +438,114 @@ c     GET BURNING RATE
 318   format(1x,'muzzle velocity m/s ',e14.6,' time of muzzle velocity s
      &ec ',e14.6)
 c     Page 22
-
-
-      
+      goto 319
+303   write(3,327)y(1),y(3)
+327   format(1x,'veloicty of projectile m/s ',e14.6,' at this time msec
+     &',e14.6)
+319   efi=chwi*forcig/(gamai-1.)
+      efp=0.0
+      do 315 i=1,nprop
+      efp=efp+chwp(i)*forcp(i)/(gamap(i)-1.0)
+315   continue
+      tenerg=efi+efp
+      write(3,317)tenerg
+317   format(1x,'total initial energy available J = ',e14.6)
+      tengas=chwi*forcig*tgas/(gamai-1.)/tempi
+      do 135 i=1,nprop
+      tengas=(frac(i)*chwp(i)*forcp(i)*tgas/tempp(i)/(gamap(i)-1.))+teng
+     &as
+      write(3,328)i,frac(i)
+328   format(' FOR PROPELLANT ',I2,' MASSFRACT BURNT IS ',e14.6)
+135   continue
+      write(3,136)tengas
+136   format(1x,'total energy remaining in gas J= ',e14.6)
+      write(3,320)elpt
+320   format(1x,'energy loss from projectiletranslation J= ',e14.6)
+      write(3,321)elpr
+321   format(1x,'energyloss from projectile roration J= ',e14.6)
+      write(3,322)elgpm
+322   format(1x,'energy lost to gas and propellant motion J= ',e14.6)
+      write(3,323)elbr
+323   format(1x,'energy lost to bore resistance J ',e14.6)
+      write(3,324)elrc
+324   format(1x,'energy lost to recoil J= ',e14.6)
+      write(3,325)elht
+325   format(1x,'energy loss from heat transfer J= ',e14.6)
+      write(3,326)elar
+326   format(1x,'energy lost to air resistance J= ',e14.6)
+c     call gettim(ihro,imino,iseco,ihunso)
+c     time=(ihro-ihr)*3600.+(imino-imin)*60.+(iseco-isec)+(ihunso-inhuns)
+c    &/100.
+c     write(3,*)time
+      stop
+20    write(*,140)
+140   format(1x,'end of file encounter')
+      stop
+30    write(*,150)
+999   continue
+998   continue
+150   format(1x,'read or write error')
+      stop
+      end
+      SUBROUTINE PRF017(P,P1,D,D1,L,SURF,MASSF,X,NP,u)
+      IMPLICIT REAL*4(A-Z)
+C     
+C     P=OUTER PERF DIA
+C     P1=INNER PERF DIA
+C     D=OUTER DIA
+c     Page 23
+C     D1=DISTANCE BETWEEN PERF CENTRES
+C     L=GRAIN LENGTH
+C     NP=NUMBER OF PERFS
+C
+C     SURF=OUTPUT SURFACE AREA
+C     MASSF=OUTPUT MASS FRACTION OF PROPELLANT BURNER
+C
+C     W=WEB BETWEEN OUTER PERFS
+C     W0=OUTER WEB
+C     W1=WEB BETWEEN OUTER AND INNER PERFS
+C     W4=MINIMUM WEB
+      INTEGER ITYM,NP
+      DATA PI,SQRT3/3.14159,1.732051/,ITYM/0/
+      DATA HAFPI,PIFOR,TWOPI/1.570796,.785398,6.283185/
+C
+      IF(ITYM.GT.0)GO TO 10
+      P1SQ=P1*P1
+      DISQ=D1*D1
+      PSQ=P*P
+      DSQ=D*D
+      D1SQ3=DI*SQRT3
+      D2SQ3=D1SQ*SQRT3
+      IF(NP.EQ.0)GO TO 2000
+      IF(NP.EQ.1)GO TO 3000
+      IF(NP.NE.7)GO TO 60
+      IF(P1.GT.(P+D1*(SQRT3-1))) GO TO 60
+      IF(D.GE.D1*(SQRT3+1.)-P)GO TO 130
+60    WRITE(6,90)
+90    FORMAT(1X,'UNACCEPTABLE GRANULATION')
+      STOP
+130   W=D1-P
+      IF(W.LT.0)GO TO 60
+      W0=(D-P-2.*D1)/2.
+      IF(W.LT.0.)GO TO 60
+      W1=(2.*D1-P-P1)/2.
+      IF(W1.LT.0.)GO TO 60
+      X1=(P1SQ-PSQ+4.*D1SQ-2.*P1*D1SQ3)/4./(D1SQ3+P-P1)
+      X2=(4.*D1SQ+D*D-2.*D*D1SQ3-PSQ)/4./(-D1SQ3+P+D)
+      A=PI*L*(D+P1+6.*P)+HAFPI*(DSQ-P1SQ-6.*PSQ)      !image obscured, guess
+      U=PI*L/4.*(DSQ-P1SQ-6.*PSQ)
+      W4=AMIN1(W,W0,W1)
+10    MASSF=0.
+      TWOX=X+X
+      XSQ=X*X
+      P1P2X=P1+TWOX
+      PP2X=P+TWOX
+      DM2X=D-TWOX
+      LM2X=L-TWOX
+      P12XSQ=P1P2X*P1P2X
+      PP2XSQ=PP2X*PP2X
+      IF(NP.EQ.0)GO TO 2000
+      IF(NP.EQ.1)GO TO 3000
+      IF(IM2X.GT.0)GO TO 340
+c     page 24
+     
