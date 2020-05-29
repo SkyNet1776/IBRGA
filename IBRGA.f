@@ -269,7 +269,7 @@ c     ENERGY LOSS TO PROJECTILE TRANSLATION
 c     ENERGY LOSS DUE TO PROJECTILE ROTATION
       if(igrad.le.1)go to 214
       pt=y(2)+y(7)
-      ! Page 19
+c     Page 19
       vzp=bvol+areab*pt
       j4zp=bint(4)+((bvol+areab*pt)**3-bvol**3)/3./areab/areab
       elgpm=tmpi*y(1)*y(1)*areab*areab*j4zp/2./vzp/vzp/vzp
@@ -326,3 +326,118 @@ c     CALCULATE GAS TEMPERATURE
       rprop=rprop+forcp(k)*chwp(k)*frac(k)/(gamap(k-1.)/tempp(k)
 231   continue
 c     Page 20
+      tenergy=elpt+elpr+elgpm+elbr+elrc+elht+elar
+      tgas=(eprop+forcig*chwi/(gamai-1.)-elpt-elpr-elgpm-elbr-elrc-elht
+     &-elar)/(rprop+forcig*chwi/(gamai-1.)/tempi)
+c     FIND FREE VOLUME
+      v1=0.0
+      cov1=0.0
+      do 241 k=1, nprop
+      v1=chwp(k)*(1.-frac(k))/rhop(k)+v1
+      cov1=cov1+chwp(k)*covp(k)*frac(k)
+241   continue
+      volg=volgi+areab*(y(2)+y(7))-v1-cov1
+c     CALCULATE MEAN PRESSURE
+      r1=0.0
+      do 251 k=1,nprop
+      r1=r1+forcp(k_*chwp(k)*frac(k)/tempp(k)
+251   continue
+      pmean=tgas/volg*(r1+forcig*chwi/tempi)
+      resp=resp+pgas*air
+      if(igrad.le.1)go to 252
+      if(iswl.ne.0)go to 253
+      pbase=pmean
+      pbrch=pmean
+      if(pbase.gt.resp=1.)iswl=1
+      go to 257
+c     USE CHAMBRAGE PRESSURE GRADIENT EQUATION
+253   j1zp=bint(1)+(bvol*pt+areab/2.*pt*pt)/areab
+      j2zp=(bvol+areab*pt)**2/areab/areab
+      j3zp=bint(3)+areab*bint(1)*pt+bvol*pt*pt/2,+areab*pt*pt*pt/6.
+      a2t=-tmpi*areab*areab/prwt/vzp/vzp
+      alf=1.-a2t*j1zp
+      alt=tmpi*areab*(areab*y(1)*y(1)/vzp+areab*resp/prwt)/vzp/vzp
+      bt=-tmpi*y(1)*y(1)*areab*areab/2./vzp/vzp/vzp
+      bata=-alt*jlzp-bt*j2zp
+      gamma=alf+a2t*j3zp/vzp
+      delta=bata+alt*j3zp/vzp+bt*j4zp/vzp
+c     calculate base pressure
+      pbase=(pmean-delta)/gamma
+c     calculate breech pressure
+      pbrch=alf*pbase+bata
+      go to 254
+c     USE LAGRANGE PRESSURE GRADIENT EQUATION
+252   if(isw1.ne.0)go to 256
+      if(pmean.lt.resp)resp=pmean
+c     CALCULATE BASE PRESSURE
+256   pbase=(pmean+tmpi*resp/3./prwt)/(1.+tmpi/3./prwt)  
+      if(pbase.gt.resp+1.)isw1=1
+c     CALCULATE BREECH PRESSURE
+      pbrch=pbase+tmpi/2./prwt*(pbase-resp)
+c     CALCULATE PROJECTILE ACCELERATION
+254   z(1)=areab*(pbase-resp)/prwt
+      if(z(1).lt.0.0)go to 257
+      go to 258
+257   if(isw1.eq.0)z(1)=0.0
+258   if(y(1).lt.0.0)y(1)=0.0
+      z(2)=y(1)
+c     Page 21
+c     GET BURNING RATE
+      do 264 m=1,nprop
+      z(ibrp+m)=0.0
+      if(ibo(m).eq.1) got 264
+      do 262 k=1,nbr(m)
+      if(pmean.gt.pres(m,k))go to 262
+      go to 263
+262   continue
+      k=nbr(m)
+263   z(ibrp+m)=beta(m,k)*(pmean*1.e-6)**alpha(m,k)
+264   continue
+      do 21 i=1,nde
+      d(i)=(z(i)-b(j)*p(i))*a(j)
+      y(i)=deltat*d(i)+y(i)
+      p(i)=3.*d(i)-ak(j)*z(i)+p(i)
+21    continue
+11    continue
+      t=t+deltat
+      if(pmaxm.gt.pmean)go to 281
+      pmaxm=pmean
+      tpmaxm=y(3)
+281   if(pmaxba.gt.pbase)go to 282
+      pmaxba=pbase
+      tpmaxba=y(3)
+282   if(pmaxbr.gt.pbrch)go to 283
+      pmaxbr=pbrch
+      tpmaxbr=y(3)
+283   continue
+      if(y(3).lt.ptime)go to 272
+      ptime=ptime+deltap
+      write(3,7)y(3),z(1),y(1),y(2),pmean,pbase,pbrch
+7     format(1x,7e11.4)
+316   format(1x)
+272   continue
+      if(t.gt.tstop)goto 200
+      if(y(2).gt.travp)go to 200
+      rmvelo=y(1)
+      tmvelo=y(3)
+      disto=y(2)
+      go to 19
+200   write(3,311)t,y(3)
+311   format(1x,' deltat t', e14.6,' intg t',e14.6)
+      write(3,312)pmaxm,tpmaxm
+312   format(1x,'PMAXMEAN P ',e14.6,' time at PMAXMEAN sec ',e14.6)
+      write(3,313)pmaxba,tpmaxba
+313   format(1x,'PMAXBASE Pa ',e14.6,' time at PMAXBASE sec ',e14.6)
+      write(3,314)pmaxbr,tpmaxbr
+314   format(1x,'PMAXBREECH Pa ',e14.6,' time at PMAXBREECH sec ',e14.6)
+      if(y(2).le.travp)go to 303
+      dfract=(travp=disto)/(y(2)-disto)
+      rmvel=(y(1)-rmvelo)*dfract+rmvelo
+      tmvel=(y(3)-tmvelo)*drafct+tmvelo
+      write(3,318)rmvel,tmvel
+318   format(1x,'muzzle velocity m/s ',e14.6,' time of muzzle velocity s
+     &ec ',e14.6)
+c     Page 22
+
+
+      
