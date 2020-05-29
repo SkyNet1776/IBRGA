@@ -548,4 +548,111 @@ C
       IF(NP.EQ.1)GO TO 3000
       IF(IM2X.GT.0)GO TO 340
 c     page 24
-     
+      SURF=0
+      V=0
+      GO TO 850
+340   S0=PI*LM2X*LM2X*(D+P1+6.*P+12.*X)+HAFPI*(DM2X*DM2X
+     & -P1P2X*P1P2X-6.*PP2X*PP2X)
+      V0=PIFOR*LM2X*(DM2X*DM2X-P1P2X*P1P2X-6.*PP2X*PP2X)
+      IF(X.GT.W4/2.)GO TO 360
+      MASSF=-TWOX/L/(DSQ-P1SQ-6.*PSQ)
+      MASSF=MASSF*(24.*XSQ+(24.*P+4.*P1+4.*D-12.*L)*+P1SQ
+     & +6.*PSQ-2.*L*D-2.*P1*L-12.*L*P-DSQ)
+      SURF=S0
+      RETURN
+360   IF(X.GT.W1/2.)GO TO 390
+      F2=0.
+      L2=0.
+      A3=0.
+      A4=0.
+      GO TO 460
+390   Z=(2.*D1+P+P1+4.*X)/4
+      B3=((P1-P)*(P1+P+4.*X)+4.*D1SQ)/4./D1/P1P2X
+      A3=ATAN(SQRT(1.-B3*B3)/B3)
+      B4=((P-P1)*(P+P1+4.*X)+4.*D1SQ/4./D1/PP2X
+      A4=ATAN(SQRT(1.-B4*B4)/B4)
+      F2=AR/4.*P12XSQ+A4/4.*PP2XSQ
+     & -SQRT(Z*(Z-D1)*(2.*Z-P-TWOX)*(2.*Z-P1-TWOX))
+      L2=LM2X*(A4*PP2X+A3*P1P2X)
+460   IF(X.GT.W/2.)GO TO 490
+      F3=0.
+      L3=0.
+      A5=0.
+      GO TO 530
+490   B5=D1/PP2X
+      A5=ATAN(SQRT(1.-B5*B5)/B5)
+      F3=(A5*PP2XSQ-D1*SQRT(PP2XSQ-D1SQ))/2
+      L3=2.*A5*LM2X*PP2X
+530   IF(X.GT.W0/2.)GO TO 560
+      F1=0.
+      L1=0.
+      A1=0.
+      A2=0.
+      GO TO 650
+560   Y=(2.*D1+P+D)/4.
+      B1=((D+P)*(D-P-4.*X)-4.*D1SQ)/4./D1/PP2X
+      A1=ATAN(SQRT(1.-B1*B1)/B1)
+      IF(A1.GT.0.)GO TO 610
+      A1=PI+A1
+610   B2=((D+P)*(D-P-4.*X)+4.*D1SQ)/4./D1/DM2X
+      A2=ATAN(SQRT(1.-B2*B2)/B2)
+      F1=A1/4.*PP2XSQ-A2/4.*DM2XSQ+SQRT(Y*(Y-D1)
+     & *(2.*Y-P-TWOX)*(2.*Y-D+TWOX))
+      L1=LM2X*(A1*PP2X+A2*DM2X)
+650   IF(X.GT.W/2.)GO TO 690
+      SURF-S0+12.*(F1+F2+F3)-6.*(L1+L2+L3)
+      V=V0+6.*(F1+F2+F3)*LM2X
+      GO TO 850
+c     Page 25
+690   IF(X.LT.X1)GO TO 730
+      S1=0.0
+      V1=0.0
+      GO TO 760
+730   S1=3.*D2SQ3-PI*PP2XSQ-HAFPI*P12XSQ
+     & +6.*F3+12.*F2
+      S1=S1+LM2X*(2.*(PI-3.*A5-3.*A4)*PP2X+(PI-6.*A3)
+     & *P1P2X)
+      V1=LM2X/2.*(3.*D2SQ3-PI*PP2XSQ)
+     & -HAFPI*P12XSQ+.6*F3+12.*F2)
+760   IF(X.LT.X2) GO TO 800
+      S2=0.0
+      V2=0.0
+      GO TO 830
+800   S2=HAFPI*DM2XSQ-3.*D2SQ3-TWOPI*PP2XSQ
+     & +12.*F1+6.*F3\
+      S2=S2+LM2X*((PI-6.*A2)*DM2X+2.*(TWOPI-3.*A1-3.*A5)
+     & *PP2X)
+      V2=LM2X/2.*(HAFPI*DM2XSQ-3.*D2SQ3-TWOPI
+     & *PP2XSQ+12.*F1+6.*F3)
+830   SURF=S1+S2
+      V=V1+V2
+850   MASSF=1.-V/U
+      RETURN
+C
+C     ZERO PERF CALCULATIONS START HERE
+C
+2000  if(d-2*x.le.0.0) go to 2001
+      twox=x+x
+      xsq=x*x
+      MASSF=TWOX*(DSQ+2.*L*D-4.*X*D-TWOX*L+4.*XSQ)/(DSQ*L)
+      u=dsq*l*pi/4.
+      SURF=PI*(DSQ/2.-4.*D*X-TWOX*L+D*L+6.*XSQ)
+      RETURN
+2001  surf=0.0
+      massf=1.0
+      u=dsq*l*pi/4
+      return
+C
+C     ONE PERF CALCULATIONS START HERE
+C
+3000  (if(d-p-4.*x.le.0.) go to 3001
+      twox=x+x
+      MASSF=TWOX*(DSQ+2.*L*D-4.*X*D-PSQ+2.*P*L-4.*P*X)
+     & /(DSQ*L-PSQ*L)
+      u=dsq*l*pi/4.-psq*l*pi/4.
+3001  surf=0.0
+      massf=1.0
+      u=dsq*l*pi/4.-psq*l*pi/3
+      return
+      END
+      
