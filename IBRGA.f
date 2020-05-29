@@ -162,3 +162,112 @@ c     page 16
      &er perforation in propellant grains cm',e14.6/' diameter of outer
      &perforation of propellant grains cm',e14.6/' outside diameter of
 c     page 17
+     &propellant graincm',e14.6/' distance between perf centers cm',e1
+     &4.6)//)
+      tmpi=0.0
+      do 96 i=1,nprop
+      forcp(i)=forcp(i)*1.e+3
+      covp(i)=covp(i)*1.e-6/1.e-3
+      rhop(i)=rhop(i)*1.e-3/1.e-6
+      glenp(i)=glenp(i)*0.01
+      pdpi(i)=pdpi(i)*0.01
+      pdpo(i)=pdpo(i)*0.01
+      gdiap(i)=gpiap(i)*0.01
+      dbpcp(i)=dbpcp(i)*0.01
+      tmpi=tmpi+chwp(i)
+96    continue
+      tmpi=tmpi+chwi
+      do 97 j=1,nprop
+      read(2,*,end=20,err=30)nbr(j),(alpha(j,i),beta(j,i),pres(j,i),
+     &i=1,nbr(j))
+110   format(1x,'number of burning rate points',i2/3x,' exponent',8x,'
+     & coefficient',10x,' pressure'/5x,'-',15x,'cm/sec-MPa**ai',10x,'MP
+     &a',/(1x,e14.6,5x,e14.6,15x,14.6))
+      do 112 i=1,nbr(j)
+      beta(j,i)=beta(j,i)*1.e-2
+      pres(j,i)=pres(j,i)*1.e6
+112   continue
+97    continue
+      write(3,65)
+      read(2,*,end=20,err=30)deltat,deltap,tstop
+      write(3,120,err=30)deltat,deltap,tstop
+120   format(1x,'time increment msec',14.6' print increment msec',e14
+     &.6/1x,'time to stop calculation msec ',e14.6)
+      write(*,130)
+      deltat=deltat*0.001
+      deltap=deltap*0.001
+      tstop=stop*.001
+130   format(1x,'the data has been read')
+      if(igrad.gt.1)go to 131
+      bore=(glr*grve*grve+aland*aland)/(glr+1.)
+      bore=sqrt(bore)
+131   areab=pi*bore*bore/4.
+      lambda=1./((13.2+4.*log10(100.*bore))**2)
+      pmaxm=0.0
+      pmaxbr=0.0
+      pmaxba=0.0
+      tpmaxm=0.0
+      tpmaxbr=0.0
+      tpmaxba=0.0
+      tpmax=0.0
+      a(1)=0.5
+      a(2)=1.-sqrt(2.)/2.
+      a(3)=1.+sqrt(2.)/2.
+      a(4)=1./6.
+      b(1)=2.
+c     Page 18
+      b(2)=1.
+      b(3)=1.
+      b(4)=2.
+      ak(1)=0.5
+      ak(2)=a(2)
+      ak(3)=a(3)
+      ak(4)=0.5
+      vp0=0.0
+      tr0=0.0
+      tcw=0.0
+      do 5 i=1,nprop
+      ibo(i)=0
+5     vp0=chwp(i)/rhop(i)+vp0
+      volgi=cham-vp0-chwi*covi
+      pmean=forcig*chwi/volgi
+      volg=volgi
+      volgi=volgi+vp0
+      wallt=twal
+      ptime=0.0
+      ibrp=8
+      z(3)=1.
+      nde=ibrp+nprop
+      write#,132)areab,pmean,vp0,volgi
+132   format(1x,'area bore m^2 ',e16.6,' pressure from ign Pa',e16.6,/
+     &1x,' volume of unburnt prop m^3 ',e16.6,' init cham vol-cov ign m
+     &^3 ',16.6)
+      write(3,6)
+6     format(1x,'      time       acc      vel      dis      mpress      
+     &       pbase       pbrch       ')
+      iswl=0
+19    continue
+      do l1 J=1,4
+c     FIND BARREL RESISTANCE
+      do 201 k=2, npts
+      if(y(2)+y(7).ge.trav(k))go to 201
+      go to 203
+201   continue
+      k=npts
+203   resp=(trav(k))-y(2)-y(7))/trav(k)-trav(k-1))
+      resp=br(k)-resp*(br(k)-br(k-1))
+c     FIND MASS FRACTION BURNING RATE
+      do 211 k=1, nprop
+      if(ibo(k).eq.1)goto211
+      call prf017(pdpo(k),pdpi(k),gdiap(k),dbpcp(k),glenp(k),surf(k),fra
+     &c(k),y(ibrp+k),nperfs(k),u)
+      if(surf(k).lt.1.e-10) ibo(k)=1
+211   continue
+      k=nprop
+c     ENERGY LOSS TO PROJECTILE TRANSLATION
+      elpt=prwt*y(1)*y*(1)/2.
+c     ENERGY LOSS DUE TO PROJECTILE ROTATION
+      if(igrad.le.1)go to 214
+      pt=y(2)+y(7)
+      ! Page 19
+      
