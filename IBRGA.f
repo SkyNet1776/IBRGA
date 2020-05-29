@@ -256,7 +256,7 @@ c     FIND BARREL RESISTANCE
       go to 203
 201   continue
       k=npts
-203   resp=(trav(k))-y(2)-y(7))/trav(k)-trav(k-1))
+203   resp=(trav(k)-y(2)-y(7))/(trav(k)-trav(k-1))
       resp=br(k)-resp*(br(k)-br(k-1))
 c     FIND MASS FRACTION BURNING RATE
       do 211 k=1, nprop
@@ -267,7 +267,7 @@ c     FIND MASS FRACTION BURNING RATE
 211   continue
       k=nprop
 c     ENERGY LOSS TO PROJECTILE TRANSLATION
-      elpt=prwt*y(1)*y*(1)/2.
+      elpt=prwt*y(1)*y(1)/2.
 c     ENERGY LOSS DUE TO PROJECTILE ROTATION
       if(igrad.le.1)go to 214
       pt=y(2)+y(7)
@@ -355,7 +355,7 @@ c     CALCULATE MEAN PRESSURE
 c     USE CHAMBRAGE PRESSURE GRADIENT EQUATION
 253   j1zp=bint(1)+(bvol*pt+areab/2.*pt*pt)/areab
       j2zp=(bvol+areab*pt)**2/areab/areab
-      j3zp=bint(3)+areab*bint(1)*pt+bvol*pt*pt/2,+areab*pt*pt*pt/6.
+      j3zp=bint(3)+areab*bint(1)*pt+bvol*pt*pt/2.+areab*pt*pt*pt/6.
       a2t=-tmpi*areab*areab/prwt/vzp/vzp
       alf=1.-a2t*j1zp
       alt=tmpi*areab*(areab*y(1)*y(1)/vzp+areab*resp/prwt)/vzp/vzp
@@ -488,7 +488,7 @@ c     write(3,*)time
 998   continue
 150   format(1x,'read or write error')
       stop
-      end
+      end do
 C
       SUBROUTINE PRF017(P,P1,D,D1,L,SURF,MASSF,X,NP,u)
       IMPLICIT REAL*4(A-Z)
@@ -535,7 +535,7 @@ C
       IF(W1.LT.0.)GO TO 60
       X1=(P1SQ-PSQ+4.*D1SQ-2.*P1*D1SQ3)/4./(D1SQ3+P-P1)
       X2=(4.*D1SQ+D*D-2.*D*D1SQ3-PSQ)/4./(-D1SQ3+P+D)
-      A=PI*L*(D+P1+6.*P)+HAFPI*(DSQ-P1SQ-6.*PSQ)      !image obscured, guess
+      A=PI*L*(D+P1+6.*P)+HAFPI*(DSQ-P1SQ-6.*PSQ)
       U=PI*L/4.*(DSQ-P1SQ-6.*PSQ)
       W4=AMIN1(W,W0,W1)
 10    MASSF=0.
@@ -574,8 +574,8 @@ c     page 24
       A3=ATAN(SQRT(1.-B3*B3)/B3)
       B4=((P-P1)*(P+P1+4.*X)+4.*D1SQ)/4./D1/PP2X
       A4=ATAN(SQRT(1.-B4*B4)/B4)
-      F2=AR/4.*P12XSQ+A4/4.*PP2XSQ&
-     & -SQRT(Z*(Z-D1)*(2.*Z-P-TWOX)*(2.*Z-P1-TWOX))
+      F2=AR/4.*P12XSQ+A4/4.*PP2XSQ-SQRT(Z*(Z-D1)*(2.*Z-P-TWOX)*(2.*Z-P1
+     &-TWOX))
       L2=LM2X*(A4*PP2X+A3*P1P2X)
 460   IF(X.GT.W/2.)GO TO 490
       F3=0.
@@ -603,7 +603,7 @@ c     page 24
      &TWOX))
       L1=LM2X*(A1*PP2X+A2*DM2X)
 650   IF(X.GT.W/2.)GO TO 690
-      SURF-S0+12.*(F1+F2+F3)-6.*(L1+L2+L3)
+      SURF=S0+12.*(F1+F2+F3)-6.*(L1+L2+L3)
       V=V0+6.*(F1+F2+F3)*LM2X
       GO TO 850
 c     Page 25
@@ -613,12 +613,12 @@ c     Page 25
       GO TO 760
 730   S1=3.*D2SQ3-PI*PP2XSQ-HAFPI*P12XSQ+6.*F3+12.*F2
       S1=S1+LM2X*(2.*(PI-3.*A5-3.*A4)*PP2X+(PI-6.*A3)*P1P2X)
-      V1=LM2X/2.*(3.*D2SQ3-PI*PP2XSQ)-HAFPI*P12XSQ+6.*F3+12.*F2)
+      V1=LM2X/2.*(3.*D2SQ3-PI*PP2XSQ-HAFPI*P12XSQ+6.*F3+12.*F2)
 760   IF(X.LT.X2) GO TO 800
       S2=0.0
       V2=0.0
       GO TO 830
-800   S2=HAFPI*DM2XSQ-3.*D2SQ3-TWOPI*PP2XSQ+12.*F1+6.*F3\
+800   S2=HAFPI*DM2XSQ-3.*D2SQ3-TWOPI*PP2XSQ+12.*F1+6.*F3
       S2=S2+LM2X*((PI-6.*A2)*DM2X+2.*(TWOPI-3.*A1-3.*A5)*PP2X)
       V2=LM2X/2.*(HAFPI*DM2XSQ-3.*D2SQ3-TWOPI*PP2XSQ+12.*F1+6.*F3)
 830   SURF=S1+S2
@@ -642,13 +642,13 @@ C
 C
 C     ONE PERF CALCULATIONS START HERE
 C
-3000  (if(d-p-4.*x.le.0.) go to 3001
+3000  if(d-p-4.*x.le.0.) go to 3001
       twox=x+x
-      MASSF=TWOX*(DSQ+2.*L*D-4.*X*D-PSQ+2.*P*L-4.*P*X)&
-     & /(DSQ*L-PSQ*L)
+      MASSF=TWOX*(DSQ+2.*L*D-4.*X*D-PSQ+2.*P*L-4.*P*X)/(DSQ*L-PSQ*L)
       u=dsq*l*pi/4.-psq*l*pi/4.
 3001  surf=0.0
       massf=1.0
       u=dsq*l*pi/4.-psq*l*pi/3
       return
+      
       END
