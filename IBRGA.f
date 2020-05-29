@@ -270,4 +270,59 @@ c     ENERGY LOSS DUE TO PROJECTILE ROTATION
       if(igrad.le.1)go to 214
       pt=y(2)+y(7)
       ! Page 19
-      
+      vzp=bvol+areab*pt
+      j4zp=bint(4)+((bvol+areab*pt)**3-bvol**3)/3./areab/areab
+      elgpm=tmpi*y(1)*y(1)*areab*areab*j4zp/2./vzp/vzp/vzp
+      go to 216
+214   elgpm=tmpi*y(1)*y(1)/6.
+c     ENERGY LOSS FROM BORE RESISTANCE
+216   elbr=y(4)
+      z(4)=areab*resp*y(1)
+c     ENERGY LOSS DUE TO RECOIL
+      elrc=rcwt*y(6)*y(6)/2
+c     ENERGY LOSS DUE TO HEAT LOSS
+      areaw=cham/areab*pi*bore+2.*areab+pi*bore*(y(2)+y(7))
+      avden=0.0
+      avc=0.0
+      avcp=0.0
+      z18=0
+      z19=0
+      do 213 k=1,nprop
+      z18=forcp(k)*gamap(k)*chwp(k)*frac(k)/(gamap(k)-1.)/tempp(k)+z18
+      z19=chwp(k)*frac(k)+z19
+      avden=avden+chwp(k)*frac(k)
+      continue
+      avcp=(z18+forcig*gamai*chwi/(gamai-1.)/tempi)/(z19+chwi)
+      avden=(avden+chwi)/(volg+cov1)
+      avvel=.5*y(1)
+      htns=lambda*avcp*avden*avvel+ho
+      z(5)=areaw*htns*(tgas=wallt)*hl
+      elht=y(5)
+      wallt=(elht+htfr*elbr)/cshl/rhocs/areaw/tshl+twal
+c     write(3,*)lambda,avcp,avden,avvel,ho,areaw,htns,tgas,wallt,hl,z(5)
+c    &,elht
+c     ENERGY LOSS DUE TO AIR RESISTANCE
+      air=iair
+      z(8)=y(1)*pgas*air
+      elar=areab*y(8)
+c     RECOIL
+      z(6)=0.0
+      if(pbrch.le/rp(1)/areab)go to 221
+      rfor=rp(2)
+      if(y(3)-tr0.ge.tr(2))go to 222
+      rfor=(tr(2)-(y(3)-tr0))/(tr(2)-tr(1))
+      rfor=rp(2)-rfor*(rp(2)-rp(1))
+222   z(6)=areab/rcwt*(pbrch-rfor/areab-resp)
+      if(y(6).lt.0.0)y(6)=0.0
+      z(7)=y(6)
+      goto 223
+221   tr0=y(3)
+223   continue
+c     CALCULATE GAS TEMPERATURE
+      eprop=0.0
+      rprop=0.0
+      do 231 k=1,nprop
+      eprop=eprop+forcp(k)*chwp(k)*frac(k)/(gamap(k)-1.)
+      rprop=rprop+forcp(k)*chwp(k)*frac(k)/(gamap(k-1.)/tempp(k)
+231   continue
+c     Page 20
