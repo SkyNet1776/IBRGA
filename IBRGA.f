@@ -1,4 +1,4 @@
-    program ibrgac
+      program ibrgac
       character bdfile*10,outfil*10
       dimension br(10),trav(10),rp(10),tr(10),forcp(10),tempp(10),covp(&
      &10)
@@ -71,7 +71,7 @@ c     page 15
       zz=zz+step
       if(k.eq.nchpts-1)go to 46
       do 58 I1=k,nchpts-1
-      if (zz.gt.chdist(I1).and. zz.lt.chdist(I1+1)go to 59
+      if (zz.gt.chdist(I1).and. zz.lt.chdist(I1+1))go to 59
 58    continue
       I1=nchpts-1
       k=I1
@@ -86,7 +86,7 @@ c     page 15
 57    r2=r1
       temp=abs(1.0-b1/bint(1))
       if(abs(1.0-b3/bint(3)).gt.temp)temp=abs(1.0-b3/bint(3))
-      if(abs(1.0-b4.bint(4)).gt.temp)temp=abs(1.0-b4/bint(4))
+      if(abs(1.0-b4/bint(4)).gt.temp)temp=abs(1.0-b4/bint(4))
       if(temp.le.0.001)go to 41
       b1=bint(1)
       b3=bint(3)
@@ -98,7 +98,7 @@ c     format(1x,'bint 1 = ',e14.6,' bint 3 = ',e14.6,' bint 4 = ',e14.&
 c    &6)
       chmlen=chdist(nchpts)
 52    write(3,40,err=30)cham,grve,aland,glr,twst,travp
-40    format(1x,'chamber volume cm**3',e.14.6,/' groove diam cm',14.6,/&
+40    format(1x,'chamber volume cm**3',e14.6,/' groove diam cm',e14.6,/&
      &' land diam cm',e14.6,/' groove/land ratio',e14.6,/' twist turns&
      &/caliber ',e14.6,/' projectile travel cm', e14.6///)
       cham-cham*1.e-6
@@ -108,7 +108,7 @@ c    &6)
 c     page 16
       read(2,*,end=20,err=30)prwt,iair,htfr,pgas
       write(3,50,err=30)prwt,iair,htfr,pgas
-50    format(1x,'projectile mass kg',e14.6./' switch to calculate energ&
+50    format(1x,'projectile mass kg',e14.6,/' switch to calculate energ&
      &y lost to air resistance J',i2,/' fraction of work against bore u&
      &sed to heat the tube',e14.6/1x,' gas pressure Pa' ,e14.6)
      
