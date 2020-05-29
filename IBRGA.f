@@ -67,7 +67,7 @@ c     page 15
       r2=0.5*chdiam(1)
       k=1
       j=int(points+0.5)
-      do 57 I=1,j	!is that right? 1 not l?
+      do 57 I=1,j
       zz=zz+step
       if(k.eq.nchpts-1)go to 46
       do 58 I1=k,nchpts-1
@@ -191,7 +191,7 @@ c     page 17
       write(3,65)
       read(2,*,end=20,err=30)deltat,deltap,tstop
       write(3,120,err=30)deltat,deltap,tstop
-120   format(1x,'time increment msec',14.6' print increment msec',e14&
+120   format(1x,'time increment msec',e14.6' print increment msec',e14&
      &.6/1x,'time to stop calculation msec ',e14.6)
       write(*,130)
       deltat=deltat*0.001
@@ -238,10 +238,10 @@ c     Page 18
       ibrp=8
       z(3)=1.
       nde=ibrp+nprop
-      write#,132)areab,pmean,vp0,volgi
+      write(3,132)areab,pmean,vp0,volgi
 132   format(1x,'area bore m^2 ',e16.6,' pressure from ign Pa',e16.6,/&
      &1x,' volume of unburnt prop m^3 ',e16.6,' init cham vol-cov ign m&
-     &^3 ',16.6)
+     &^3 ',e16.6)
       write(3,6)
 6     format(1x,'      time       acc      vel      dis      mpress      &
      &       pbase       pbrch       ')
@@ -296,7 +296,7 @@ c     ENERGY LOSS DUE TO HEAT LOSS
       avden=(avden+chwi)/(volg+cov1)
       avvel=.5*y(1)
       htns=lambda*avcp*avden*avvel+ho
-      z(5)=areaw*htns*(tgas=wallt)*hl
+      z(5)=areaw*htns*(tgas-wallt)*hl
       elht=y(5)
       wallt=(elht+htfr*elbr)/cshl/rhocs/areaw/tshl+twal
 c     write(3,*)lambda,avcp,avden,avvel,ho,areaw,htns,tgas,wallt,hl,z(5)&
@@ -307,7 +307,7 @@ c     ENERGY LOSS DUE TO AIR RESISTANCE
       elar=areab*y(8)
 c     RECOIL
       z(6)=0.0
-      if(pbrch.le/rp(1)/areab)go to 221
+      if(pbrch.le.rp(1)/areab)go to 221
       rfor=rp(2)
       if(y(3)-tr0.ge.tr(2))go to 222
       rfor=(tr(2)-(y(3)-tr0))/(tr(2)-tr(1))
@@ -323,7 +323,7 @@ c     CALCULATE GAS TEMPERATURE
       rprop=0.0
       do 231 k=1,nprop
       eprop=eprop+forcp(k)*chwp(k)*frac(k)/(gamap(k)-1.)
-      rprop=rprop+forcp(k)*chwp(k)*frac(k)/(gamap(k-1.)/tempp(k)
+      rprop=rprop+forcp(k)*chwp(k)*frac(k)/(gamap(k)-1.)/tempp(k)
 231   continue
 c     Page 20
       tenergy=elpt+elpr+elgpm+elbr+elrc+elht+elar
@@ -340,7 +340,7 @@ c     FIND FREE VOLUME
 c     CALCULATE MEAN PRESSURE
       r1=0.0
       do 251 k=1,nprop
-      r1=r1+forcp(k_*chwp(k)*frac(k)/tempp(k)
+      r1=r1+forcp(k)*chwp(k)*frac(k)/tempp(k)
 251   continue
       pmean=tgas/volg*(r1+forcig*chwi/tempi)
       resp=resp+pgas*air
@@ -348,7 +348,7 @@ c     CALCULATE MEAN PRESSURE
       if(iswl.ne.0)go to 253
       pbase=pmean
       pbrch=pmean
-      if(pbase.gt.resp=1.)iswl=1
+      if(pbase.gt.resp+1.)iswl=1
       go to 257
 c     USE CHAMBRAGE PRESSURE GRADIENT EQUATION
 253   j1zp=bint(1)+(bvol*pt+areab/2.*pt*pt)/areab
@@ -431,7 +431,7 @@ c     GET BURNING RATE
       write(3,314)pmaxbr,tpmaxbr
 314   format(1x,'PMAXBREECH Pa ',e14.6,' time at PMAXBREECH sec ',e14.6)
       if(y(2).le.travp)go to 303
-      dfract=(travp=disto)/(y(2)-disto)
+      dfract=(travp-disto)/(y(2)-disto)
       rmvel=(y(1)-rmvelo)*dfract+rmvelo
       tmvel=(y(3)-tmvelo)*drafct+tmvelo
       write(3,318)rmvel,tmvel
@@ -556,7 +556,7 @@ c     page 24
       V0=PIFOR*LM2X*(DM2X*DM2X-P1P2X*P1P2X-6.*PP2X*PP2X)
       IF(X.GT.W4/2.)GO TO 360
       MASSF=-TWOX/L/(DSQ-P1SQ-6.*PSQ)
-      MASSF=MASSF*(24.*XSQ+(24.*P+4.*P1+4.*D-12.*L)*+P1SQ&
+      MASSF=MASSF*(24.*XSQ+(24.*P+4.*P1+4.*D-12.*L)*X+P1SQ&
      & +6.*PSQ-2.*L*D-2.*P1*L-12.*L*P-DSQ)
       SURF=S0
       RETURN
@@ -569,7 +569,7 @@ c     page 24
 390   Z=(2.*D1+P+P1+4.*X)/4
       B3=((P1-P)*(P1+P+4.*X)+4.*D1SQ)/4./D1/P1P2X
       A3=ATAN(SQRT(1.-B3*B3)/B3)
-      B4=((P-P1)*(P+P1+4.*X)+4.*D1SQ/4./D1/PP2X
+      B4=((P-P1)*(P+P1+4.*X)+4.*D1SQ)/4./D1/PP2X
       A4=ATAN(SQRT(1.-B4*B4)/B4)
       F2=AR/4.*P12XSQ+A4/4.*PP2XSQ&
      & -SQRT(Z*(Z-D1)*(2.*Z-P-TWOX)*(2.*Z-P1-TWOX))
@@ -610,10 +610,8 @@ c     Page 25
       GO TO 760
 730   S1=3.*D2SQ3-PI*PP2XSQ-HAFPI*P12XSQ&
      & +6.*F3+12.*F2
-      S1=S1+LM2X*(2.*(PI-3.*A5-3.*A4)*PP2X+(PI-6.*A3)&
-     & *P1P2X)
-      V1=LM2X/2.*(3.*D2SQ3-PI*PP2XSQ)&
-     & -HAFPI*P12XSQ+.6*F3+12.*F2)
+      S1=S1+LM2X*(2.*(PI-3.*A5-3.*A4)*PP2X+(PI-6.*A3)*P1P2X)
+      V1=LM2X/2.*(3.*D2SQ3-PI*PP2XSQ)-HAFPI*P12XSQ+.6*F3+12.*F2)
 760   IF(X.LT.X2) GO TO 800
       S2=0.0
       V2=0.0
