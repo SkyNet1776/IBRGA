@@ -1,2 +1,2 @@
 # IBRGA
-Fortan source code for IBRGA and developments.
+FORTRAN source code for IBRGA and its iterations.
