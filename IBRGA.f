@@ -16,9 +16,6 @@ C     CALL GETTIM(IHR,IMIN,ISEC,IHUNS)
 15    FORMAT(' INPUT NAME OF DATA FILE TO BE USED AS INPUT ')
       READ(*,10)BDFILE
 10    FORMAT(A10)
-c      PRINT*, 'this test works'
-c      WRITE(*,*) 'this test works'
-c     https://math.hawaii.edu/~hile/fortran/fort7.htm
       OPEN(UNIT=2,ERR=999,FILE=BDFILE,STATUS='OLD',IOSTAT=IOS)
       REWIND 2
       WRITE(*,25)
